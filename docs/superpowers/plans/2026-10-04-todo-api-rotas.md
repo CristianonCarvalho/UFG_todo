@@ -1587,7 +1587,7 @@ curl -s -o /dev/null -w "delete: %{http_code}\n" -X DELETE http://127.0.0.1:8765
 kill %1
 rm -f tasks.db
 ```
-Expected: `docs: 200`; criação com `priority_source` `fallback` ou `jev`; edição com `manual`; erros 422 e 404 no formato `{"erro": {...}}`; `delete: 204`. Sem chave de API configurada a prioridade vem do fallback (`alta`, por causa de "urgente"). **Não** peça nem use a chave do `.env`: a chamada real ao Jev depende de autorização explícita do usuário e fica registrada como pendência.
+Expected: `docs: 200`; criação com `priority_source` `fallback` ou `jev`; edição com `manual`; erros 422 e 404 no formato `{"erro": {...}}`; `delete: 204`. Sem chave de API configurada a prioridade vem do fallback (`alta`, por causa de "urgente"). **Não** use a chave do `.env` nesta tarefa (o worktree nem a possui): a chamada real ao Jev foi autorizada pelo usuário e é feita pelo arquiteto, na `main`, depois da orquestração. Resultado do teste com o código do ciclo 1: HTTP 401 `User not found` nos dois endpoints (`/v1/systemone` e `/alpha/decisions`), ou seja, a chave não foi aceita pelo OpenRouter; o fallback funcionou (`alta`, `source=fallback`).
 
 - [ ] **Step 2: Rodar a suíte para obter os números reais**
 
