@@ -1,2 +1,5 @@
 gate:
   allow_unverified: true
+  # Lista explícita desliga a detecção automática (que usa o Python global, sem .venv).
+  commands:
+    - {name: sintaxe, run: "python3 -m compileall -q app tests", timeout_seconds: 60, required: false}
