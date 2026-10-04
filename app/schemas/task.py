@@ -96,7 +96,7 @@ class TaskOut(BaseModel):
     priority_source: PrioritySource
     created_at: datetime
 
-    @computed_field  # type: ignore[misc]
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def priority_notice(self) -> str | None:
         """Aviso amigável quando a prioridade veio do fallback."""
