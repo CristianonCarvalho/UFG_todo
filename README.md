@@ -2,87 +2,72 @@
 
 Micro-API de tarefas para equipes, com prioridade sugerida automaticamente.
 
-> **Estado:** em construção. A execução da API ainda não está disponível; o ponto de entrada e as rotas HTTP não foram implementados.
+## O que o projeto resolve?
 
-## Visão geral
+Equipes precisam registrar e acompanhar tarefas de forma simples, sem uma ferramenta pesada. A prioridade é sugerida automaticamente para reduzir o trabalho manual, e a pessoa pode ajustá-la depois. O público é o uso interno de uma equipe.
 
-O objetivo é permitir que equipes registrem tarefas, acompanhem seu andamento e recebam uma sugestão automática de prioridade. O desenho prevê uma API em camadas, com validação de dados, regras de negócio, acesso a dados e tratamento centralizado de erros.
+Funcionalidades do MVP:
+- criar, listar, editar e remover tarefas;
+- marcar como concluída e filtrar por status;
+- prioridade automática (Jev, com fallback local) e edição manual da prioridade;
+- mensagens de erro amigáveis, em português.
 
-O código disponível nesta etapa inclui schemas, configurações, classificação de prioridade e tratamento de erros. Rotas, service, repository e persistência ainda fazem parte do desenho futuro.
+## Como instalar e executar?
 
-## Prioridade automática
+Pré-requisito: Python 3.12.
 
-O classificador consulta o Jev pela API System One do OpenRouter usando `POST {base_url}/v1/systemone` e o modelo `typesafe/jev-1.13`. A chamada é feita com `httpx`, sem SDK de IA. Uma confiança mínima é exigida; se a consulta falhar ou a resposta não for válida, o classificador usa regras locais por palavras-chave e, como último recurso, prioridade média.
+1. Crie o ambiente virtual: `python3.12 -m venv .venv`
+2. Ative-o: `source .venv/bin/activate`
+3. Instale as dependências: `pip install -r requirements-dev.txt`
+4. Copie as variáveis de ambiente: `cp .env.example .env`
 
-O uso do Jev é opcional. Sem uma chave, a classificação usa o fallback local. Os testes não fazem chamadas de rede.
+| Variável | Obrigatória? | Padrão | Para que serve |
+|---|---|---|---|
+| `OPENROUTER_API_KEY` | não | (vazia) | chave do OpenRouter para o Jev |
+| `OPENROUTER_BASE_URL` | não | `https://openrouter.ai/api` | endereço base do OpenRouter |
+| `JEV_MODEL` | não | `typesafe/jev-1.13` | modelo do Jev (versão fixa) |
+| `CLASSIFIER_TIMEOUT_SECONDS` | não | `5.0` | tempo máximo de espera pelo Jev |
+| `CLASSIFIER_MAX_RETRIES` | não | `1` | novas tentativas em falha temporária |
+| `JEV_MIN_CONFIDENCE` | não | `0.5` | confiança mínima aceita do Jev |
 
-## Requisitos
+Sem `OPENROUTER_API_KEY`, o classificador continua funcionando com o fallback local.
 
-- Python `>=3.12,<3.13` (versão definida em `.python-version`).
-- Dependências diretas com versões fixadas nos arquivos de requisitos.
-- Nenhum driver de banco ou SDK de IA é necessário.
+> **Em construção:** as rotas e o `app/main.py` ainda não foram implementados, então ainda não há comando para subir a API.
 
-## Preparar o ambiente
-
-No macOS ou Linux:
-
-```bash
-python3.12 -m venv .venv
-.venv/bin/pip install -r requirements-dev.txt
-cp .env.example .env
-```
-
-O arquivo `.env` é opcional. Para usar o Jev, informe a chave em `OPENROUTER_API_KEY`; sem ela, o fallback local continua disponível:
-
-```dotenv
-OPENROUTER_API_KEY=[preencher]
-OPENROUTER_BASE_URL=https://openrouter.ai/api
-JEV_MODEL=typesafe/jev-1.13
-CLASSIFIER_TIMEOUT_SECONDS=5.0
-CLASSIFIER_MAX_RETRIES=1
-JEV_MIN_CONFIDENCE=0.5
-```
-
-Não compartilhe nem registre a chave de API. Os nomes e valores padrão das configurações estão disponíveis em `.env.example`.
-
-## Executar
-
-**Em construção:** ainda não há ponto de entrada da aplicação nem rotas para iniciar a API. Os endpoints abaixo descrevem o desenho previsto e não estão disponíveis para uso.
-
-| Método | Caminho previsto | Função |
-|---|---|---|
-| `POST` | `/tasks` | Criar uma tarefa e sugerir sua prioridade |
-| `GET` | `/tasks?status=pendente` | Listar tarefas, com filtro opcional |
-| `GET` | `/tasks/{id}` | Consultar uma tarefa |
-| `PATCH` | `/tasks/{id}` | Editar campos e prioridade |
-| `PATCH` | `/tasks/{id}/complete` | Concluir uma tarefa |
-| `DELETE` | `/tasks/{id}` | Remover uma tarefa |
-
-O desenho dos componentes e dos fluxos está em [docs/arquitetura.md](docs/arquitetura.md). As escolhas de tecnologia e comportamento estão em [docs/decisoes-tecnicas.md](docs/decisoes-tecnicas.md).
-
-## Testes e qualidade
-
-Execute os testes e as verificações a partir da raiz do projeto:
+## Como rodar os testes?
 
 ```bash
-.venv/bin/pytest --cov=app --cov-report=term-missing
-.venv/bin/ruff check app tests
-.venv/bin/black --check app tests
-.venv/bin/mypy app
-.venv/bin/pip check
+pytest
+pytest --cov=app
+ruff check app tests
+mypy app
 ```
 
-Última execução registrada neste README:
+Os testes não usam rede nem precisam de chave de API. Resultado da última execução: 55 testes passando, cobertura total de 96%.
 
-- **Testes:** 55 passaram.
-- **Cobertura total:** 96%.
-- **Classificador de prioridade:** 96%.
-- **Tratamento de erros:** 94%.
-- **Ruff, Black e dependências:** verificações aprovadas.
-- **Mypy:** ainda não aprovado; aponta uma anotação de tipo ignorada que não é mais necessária.
+## Quais limites existem?
 
-## Modelo de tarefa previsto
+- **Escopo do MVP:** sem autenticação, sem multiusuário, sem cache nem filas.
+- **SQLite:** arquivo local, adequado a uma equipe pequena, sem concorrência alta nem alta disponibilidade.
+- **Prioridade automática:** depende de um serviço externo (Jev/OpenRouter). Em falha, usa uma heurística simples por palavras-chave, menos precisa. A pessoa é avisada (`priority_notice`) e pode corrigir.
+- **Privacidade:** título e descrição das tarefas são enviados ao OpenRouter/TypeSafe para classificar. Sem chave, nada é enviado.
+- **Recalculo:** a prioridade não é recalculada quando título ou descrição são editados.
+- **Validações:** título de 1 a 100 caracteres e descrição de até 500.
+- **Idioma:** mensagens apenas em português do Brasil.
+- **Ainda não implementado:** rotas, models ORM, services, repositories e `main.py`.
+- **Endpoint do Jev:** a documentação do OpenRouter é divergente sobre o endpoint (`/v1/systemone` ou `/alpha/decisions`); ele ainda precisa ser validado com uma chave real.
 
-O desenho da tarefa inclui identificador, título (de 1 a 100 caracteres), descrição opcional (até 500 caracteres), estado (`pendente` ou `concluida`), prioridade (`baixa`, `media` ou `alta`), origem da prioridade (`jev`, `fallback` ou `manual`) e data de criação.
+## Como a IA foi usada no processo?
 
-Quando uma pessoa define a prioridade manualmente, essa escolha deve prevalecer sobre a classificação automática. O modelo de dados e os endpoints ainda não foram implementados.
+**IA no produto (em tempo de execução):** o Jev classifica a prioridade na criação da tarefa, via OpenRouter, com fallback local. Usamos o Jev, e não um LLM de chat, porque ele é um modelo de decisão estruturada, que devolve respostas tipadas com probabilidades.
+
+**IA no desenvolvimento:** o agente de codificação gerou nesta etapa as dependências, a configuração das ferramentas, os schemas, o tratamento de erros, o classificador, os testes, os diagramas, as decisões técnicas, o CI e este README. O fluxo foi: contexto e escopo definidos em prompt, geração, verificação automática (testes, `ruff`, `mypy`, `pip check`) e relatório de evidências para revisão humana.
+
+- Ferramenta/modelo do agente: [preencher]
+- Revisão humana feita por: [preencher]
+
+O código gerado por IA foi revisado e validado por testes. As decisões de escopo e as regras de negócio vieram de pessoas.
+
+## Arquitetura
+
+Veja os diagramas e o modelo de dados em [docs/arquitetura.md](docs/arquitetura.md) e as decisões em [docs/decisoes-tecnicas.md](docs/decisoes-tecnicas.md).
