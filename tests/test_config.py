@@ -25,3 +25,10 @@ def test_le_variaveis_de_ambiente(monkeypatch) -> None:
 def test_chave_nao_aparece_na_representacao() -> None:
     settings = Settings(_env_file=None, openrouter_api_key="chave-teste")
     assert "chave-teste" not in repr(settings)
+
+
+def test_database_url_padrao_e_sobrescrita(monkeypatch) -> None:
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    assert Settings(_env_file=None).database_url == "sqlite:///./tasks.db"
+    monkeypatch.setenv("DATABASE_URL", "sqlite:///./outro.db")
+    assert Settings(_env_file=None).database_url == "sqlite:///./outro.db"
