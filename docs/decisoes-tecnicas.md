@@ -52,3 +52,24 @@ Cada decisão segue o formato: contexto, decisão e motivo.
 - **Contexto:** testes devem ser reproduzíveis sem depender de serviços externos ou credenciais.
 - **Decisão:** testes unitários do classificador (`httpx.MockTransport`) e dos erros (`TestClient`). Testes de integração entram quando as rotas existirem.
 - **Motivo:** validar o comportamento de forma rápida e previsível, sem tráfego de rede.
+
+## 11. Sessão síncrona e rotas `def`
+- **Contexto:** o classificador usa `httpx.Client` síncrono e o SQLite não se beneficia de I/O assíncrono.
+- **Decisão:** SQLAlchemy síncrono, uma sessão por requisição (`get_db`, com rollback em falha) e rotas declaradas com `def`, que o FastAPI executa em threadpool.
+- **Motivo:** menos complexidade e nenhuma chamada bloqueante no loop de eventos.
+
+## 12. Esquema do banco por migração
+- **Decisão:** Alembic com a migração `0001`; produção usa `alembic upgrade head`. Os testes criam as tabelas com `Base.metadata.create_all`.
+- **Motivo:** evolução do esquema rastreável, sem criar tabelas implicitamente ao subir a API.
+
+## 13. Repository atrás de um `Protocol`
+- **Decisão:** o service depende de `TaskRepositoryPort`, e `TaskRepository` o implementa.
+- **Motivo:** o service é testado com um repository em memória, sem banco. Os métodos de listagem se chamam `list_tasks` para não sombrear o `list` embutido.
+
+## 14. Regras do `PATCH` e de concluir
+- **Decisão:** só campos informados e não nulos são aplicados; por isso a descrição não pode ser apagada. Editar a prioridade grava `manual` (mesmo com o valor igual) e não chama o classificador. Concluir uma tarefa já concluída responde 200.
+- **Motivo:** regra simples e previsível; reclassificação ao editar título ou descrição fica como pendência.
+
+## 15. `id` limitado ao intervalo do SQLite
+- **Decisão:** `id` na rota exige inteiro entre 1 e 9223372036854775807.
+- **Motivo:** um inteiro maior que o suportado pelo SQLite gerava erro interno (500); agora gera 422 amigável.
