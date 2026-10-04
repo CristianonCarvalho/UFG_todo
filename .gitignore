@@ -32,3 +32,8 @@ Thumbs.db
 
 # Claude Code local
 .claude/settings.local.json
+
+# Banco local, cobertura e estado do Meister
+tasks.db
+.coverage
+.meister/

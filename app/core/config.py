@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Configurações do classificador de prioridade."""
+    """Configurações da aplicação: banco de dados e classificador de prioridade."""
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     classifier_timeout_seconds: float = 5.0
     classifier_max_retries: int = 1
     jev_min_confidence: float = 0.5
+    database_url: str = "sqlite:///./tasks.db"
 
 
 @lru_cache
