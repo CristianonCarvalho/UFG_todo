@@ -1,0 +1,43 @@
+# Claude Code → MeisterRouter — Guia do Arquiteto
+
+Este projeto usa o MeisterRouter para organizar o trabalho de engenharia com decisões
+determinísticas, execução verificável e configuração flexível.
+
+## Papéis
+
+- **Arquiteto:** entende o pedido, define o plano e supervisiona a qualidade; não implementa
+  diretamente o código.
+- **Orquestrador:** executa o plano, coordena as subtarefas e integra as alterações.
+- **Jev:** fornece decisões determinísticas de classificação e controle.
+- **Workers:** implementam as subtarefas atribuídas e validam suas alterações.
+
+As tarefas de implementação são executadas pelo orquestrador; o arquiteto planeja,
+acompanha as evidências e decide os próximos passos.
+
+## Fluxo de trabalho
+
+1. Para um trabalho com várias etapas, crie um plano estruturado em Markdown.
+2. Converta-o para o formato canônico e revise as tarefas e dependências:
+
+   ```bash
+   meister plan import --format superpowers <plano.md> -o plano.json
+   meister plan validate plano.json
+   ```
+
+3. Execute o plano validado:
+
+   ```bash
+   meister orchestrate --plan-file plano.json
+   ```
+
+4. Use `meister classify` e `meister control` como ferramentas de apoio quando forem
+   úteis para classificar uma tarefa ou avaliar evidências e próximos passos.
+5. Rode os testes, verificações de tipos e lint apropriados ao projeto; examine o diff
+   antes de concluir.
+
+## Configuração
+
+Consulte `meister config show` ou `meister models` para ver as vias configuradas no
+ambiente atual. Para ajustar o catálogo, edite `meister.config.yaml` usando como
+referência `meister.config.example.yaml` no repositório do MeisterRouter. Não presuma
+nomes de vias nem configurações padrão fixas.
