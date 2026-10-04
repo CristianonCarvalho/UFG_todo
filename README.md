@@ -79,7 +79,7 @@ Os testes não usam rede nem precisam de chave de API. Resultado da última exec
 
 **IA no desenvolvimento:** o agente de codificação gerou as dependências, a configuração das ferramentas, os schemas, o tratamento de erros, o classificador, o model, o repository, o service, as rotas, os testes, os diagramas, as decisões técnicas, o CI e este README. O fluxo foi: contexto e escopo definidos em prompt, geração, verificação automática (testes, `ruff`, `mypy`, `pip check`) e relatório de evidências para revisão humana.
 
-- Ferramenta/modelo do agente: [preencher]
+- Ferramenta/modelo do agente: Claude Code com Claude Sonnet 5.5 (esforço alto) atuou como arquiteto e gestor, com o framework Superpowers (skills de brainstorming, spec e plano de implementação) para estruturar o processo: levantou os requisitos, escreveu o spec e o plano, dividiu o trabalho em tarefas e verificou o resultado (testes, `ruff`, `mypy`, `pip check` e a API no ar). A execução foi orquestrada pelo MeisterRouter (framework próprio de orquestração de agentes), que distribuiu as tarefas, em paralelo e em worktrees isolados do Git, para agentes de codificação: GitHub Copilot (GPT 6 Luna) e Antigravity (Gemini 3.8).
 - Revisão humana feita por: [preencher]
 
 O código gerado por IA foi revisado e validado por testes. As decisões de escopo e as regras de negócio vieram de pessoas.
