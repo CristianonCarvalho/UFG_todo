@@ -26,7 +26,7 @@ Cada decisão segue o formato: contexto, decisão e motivo.
 - **Contexto:** o Jev é um modelo de decisão estruturada (perguntas tipadas e respostas com probabilidades), não um LLM de chat.
 - **Decisão:** chamar `POST {base_url}/v1/systemone` com `httpx`, pergunta do tipo `choice` e modelo `typesafe/jev-1.13` (versão fixa).
 - **Motivo:** resposta tipada e resultado estável, sem dependência de SDK.
-- **Ressalva:** a documentação do OpenRouter diverge entre `/v1/systemone` (guia) e `/alpha/decisions` (tutorial). O endpoint precisa ser validado com uma chave real.
+- **Validação:** a documentação do OpenRouter divergia entre `/v1/systemone` (guia) e `/alpha/decisions` (tutorial). Com uma chave real, os dois responderam HTTP 200 com o mesmo formato (`choice`, `probabilities`, `confidence`); o app segue com `/v1/systemone`. Chaves de gerenciamento (`is_management_key`) recebem 401 nesses endpoints, então é preciso uma chave de API comum.
 
 ## 6. Fallback obrigatório na prioridade
 - **Contexto:** a criação de tarefas não deve depender da disponibilidade do serviço externo de classificação.

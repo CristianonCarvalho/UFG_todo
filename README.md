@@ -91,7 +91,7 @@ Resultado da última execução do frontend: 62 testes passando e build concluí
 - **Descrição:** não é possível apagá-la por `PATCH`; só substituí-la.
 - **Validações:** título de 1 a 100 caracteres e descrição de até 500.
 - **Idioma:** mensagens apenas em português do Brasil.
-- **Endpoint do Jev:** a documentação do OpenRouter diverge sobre o endpoint (`/v1/systemone` ou `/alpha/decisions`); ele ainda precisa ser validado com uma chave real.
+- **Endpoint do Jev:** a documentação do OpenRouter divergia entre `/v1/systemone` e `/alpha/decisions`. Com uma chave real, os dois responderam com o mesmo formato, e o app usa `/v1/systemone`. A chave precisa ser uma chave de API comum do OpenRouter: chaves de gerenciamento recebem 401.
 - **Frontend:** interface simples, sem edição de título e descrição, sem paginação e sem autenticação; em desenvolvimento usa o proxy do Vite, e a API não tem CORS configurado.
 
 ## Como a IA foi usada no processo?
