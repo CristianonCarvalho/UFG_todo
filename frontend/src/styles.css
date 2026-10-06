@@ -1,0 +1,157 @@
+:root {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #1f2933;
+  background: #f5f7fa;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #9aa5b1;
+  border-radius: 0.4rem;
+  background: #fff;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #2680c2;
+  outline-offset: 2px;
+}
+
+.task-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.6rem;
+  background: #fff;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.field input,
+.field textarea {
+  padding: 0.5rem;
+  border: 1px solid #9aa5b1;
+  border-radius: 0.4rem;
+}
+
+.field-error {
+  margin: 0;
+  color: #b42318;
+}
+
+.filter {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter button[aria-pressed="true"] {
+  border-color: #2680c2;
+  background: #e1effa;
+  font-weight: 600;
+}
+
+.task-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.6rem;
+  background: #fff;
+}
+
+.task-main h3 {
+  margin: 0 0 0.25rem;
+}
+
+.task-main p {
+  margin: 0.25rem 0;
+}
+
+.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #e4e7eb;
+  font-size: 0.85rem;
+}
+
+.notice {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  background: #fff3c4;
+  font-size: 0.9rem;
+}
+
+.banner {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #f1a9a0;
+  border-radius: 0.6rem;
+  background: #fdecea;
+  color: #7a1c14;
+}
+
+.banner p {
+  margin: 0;
+}
+
+.banner-id {
+  font-size: 0.85rem;
+}
+
+.empty {
+  color: #52606d;
+}
