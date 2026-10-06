@@ -73,3 +73,20 @@ Cada decisão segue o formato: contexto, decisão e motivo.
 ## 15. `id` limitado ao intervalo do SQLite
 - **Decisão:** `id` na rota exige inteiro entre 1 e 9223372036854775807.
 - **Motivo:** um inteiro maior que o suportado pelo SQLite gerava erro interno (500); agora gera 422 amigável.
+
+## 16. Frontend em React com Vite, sem bibliotecas extras
+- **Contexto:** a interface precisa ser leve e simples, e o spec já definia React.
+- **Decisão:** Vite + React em JavaScript, CSS simples, estado com `useState` e `useEffect` encapsulados no hook `useTasks`; sem Redux, router nem bibliotecas de dados.
+- **Motivo:** a tela é uma única página com poucas ações. Menos dependências significam menos manutenção.
+
+## 17. Proxy do Vite em vez de CORS
+- **Decisão:** em desenvolvimento, o Vite encaminha `/tasks` para a API; o backend não foi alterado e não tem CORS.
+- **Motivo:** mantém o backend intacto. Servir o frontend em outra origem em produção exigirá `CORSMiddleware` ou um servidor de arquivos estáticos.
+
+## 18. Um único módulo fala com a API
+- **Decisão:** `api.js` concentra o `fetch`, trata o 204 do `DELETE` e converte o formato `{"erro": {...}}` em `ApiError`; falhas de rede e respostas fora do formato viram mensagens amigáveis.
+- **Motivo:** os componentes não conhecem HTTP, e nenhum erro técnico chega ao usuário.
+
+## 19. Sem estado otimista
+- **Decisão:** depois de cada ação, o hook recarrega a lista do servidor e ignora respostas antigas quando o filtro muda rápido.
+- **Motivo:** a tela sempre reflete o que a API tem, inclusive a origem da prioridade (`jev`, `fallback` ou `manual`).

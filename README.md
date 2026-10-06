@@ -11,6 +11,7 @@ Funcionalidades do MVP:
 - marcar como concluída e filtrar por status;
 - prioridade automática (Jev, com fallback local) e edição manual da prioridade;
 - mensagens de erro amigáveis, em português.
+- interface web em React para usar tudo isso pelo navegador.
 
 ## Como instalar e executar?
 
@@ -24,6 +25,16 @@ Pré-requisito: Python 3.12.
 6. Suba a API: `uvicorn app.main:app`
 
 A documentação interativa fica em `http://127.0.0.1:8000/docs`.
+
+### Frontend (React)
+
+Pré-requisitos: Node.js 26 (versão usada no desenvolvimento) e a API no ar.
+
+1. Instale as dependências: `cd frontend && npm install`
+2. Suba o frontend: `npm run dev`
+3. Abra o endereço mostrado no terminal (`http://127.0.0.1:5173`)
+
+Em desenvolvimento, o Vite encaminha as chamadas de `/tasks` para a API em `http://127.0.0.1:8000`.
 
 | Variável | Obrigatória? | Padrão | Para que serve |
 |---|---|---|---|
@@ -59,6 +70,16 @@ mypy app
 
 Os testes não usam rede nem precisam de chave de API. Resultado da última execução: 119 testes passando, cobertura total de 94%.
 
+Testes do frontend:
+
+```bash
+cd frontend
+npm test
+npm run build
+```
+
+Resultado da última execução do frontend: 62 testes passando e build concluído.
+
 ## Quais limites existem?
 
 - **Escopo do MVP:** sem autenticação, sem multiusuário, sem cache nem filas.
@@ -71,13 +92,13 @@ Os testes não usam rede nem precisam de chave de API. Resultado da última exec
 - **Validações:** título de 1 a 100 caracteres e descrição de até 500.
 - **Idioma:** mensagens apenas em português do Brasil.
 - **Endpoint do Jev:** a documentação do OpenRouter diverge sobre o endpoint (`/v1/systemone` ou `/alpha/decisions`); ele ainda precisa ser validado com uma chave real.
-- **Frontend:** ainda não existe.
+- **Frontend:** interface simples, sem edição de título e descrição, sem paginação e sem autenticação; em desenvolvimento usa o proxy do Vite, e a API não tem CORS configurado.
 
 ## Como a IA foi usada no processo?
 
 **IA no produto (em tempo de execução):** o Jev classifica a prioridade na criação da tarefa, via OpenRouter, com fallback local. Usamos o Jev, e não um LLM de chat, porque ele é um modelo de decisão estruturada, que devolve respostas tipadas com probabilidades.
 
-**IA no desenvolvimento:** o agente de codificação gerou as dependências, a configuração das ferramentas, os schemas, o tratamento de erros, o classificador, o model, o repository, o service, as rotas, os testes, os diagramas, as decisões técnicas, o CI e este README. O fluxo foi: contexto e escopo definidos em prompt, geração, verificação automática (testes, `ruff`, `mypy`, `pip check`) e relatório de evidências para revisão humana.
+**IA no desenvolvimento:** o agente de codificação gerou as dependências, a configuração das ferramentas, os schemas, o tratamento de erros, o classificador, o model, o repository, o service, as rotas, o frontend React, os testes, os diagramas, as decisões técnicas, o CI e este README. O fluxo foi: contexto e escopo definidos em prompt, geração, verificação automática (testes, `ruff`, `mypy`, `pip check`) e relatório de evidências para revisão humana.
 
 - Ferramenta/modelo do agente: Claude Code com Claude Sonnet 5.5 (esforço alto) atuou como arquiteto e gestor, com o framework Superpowers (skills de brainstorming, spec e plano de implementação) para estruturar o processo: levantou os requisitos, escreveu o spec e o plano, dividiu o trabalho em tarefas e verificou o resultado (testes, `ruff`, `mypy`, `pip check` e a API no ar). A execução foi orquestrada pelo MeisterRouter (framework próprio de orquestração de agentes), que distribuiu as tarefas, em paralelo e em worktrees isolados do Git, para agentes de codificação: GitHub Copilot (GPT 6 Luna) e Antigravity (Gemini 3.8).
 - Revisão humana feita por: Cristiano Carvalho
