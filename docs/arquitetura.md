@@ -1,6 +1,6 @@
 # Arquitetura
 
-Visão da Micro-API de tarefas. As rotas, o service e o repository ainda não foram implementados; os diagramas descrevem o desenho alvo.
+Visão da Micro-API de tarefas e de seu frontend. Os diagramas mostram a arquitetura da API e o fluxo das operações.
 
 ## Tarefa e endpoints
 
@@ -177,3 +177,17 @@ sequenceDiagram
         end
     end
 ```
+
+## Frontend
+
+A interface fica em `frontend/` (Vite + React) e conversa com a API por `/tasks`.
+
+```text
+frontend/src/
+├── api.js          # único módulo que chama a API; converte erros em ApiError
+├── useTasks.js     # estado da lista, filtro, carregamento e ações
+├── App.jsx         # compõe a tela
+└── components/     # TaskForm, StatusFilter, TaskList, TaskItem, ErrorBanner
+```
+
+A prioridade aparece com a origem: `jev` ("Sugerida pela IA"), `fallback` ("Estimativa automática", com o aviso amigável da API) e `manual` ("Definida por você").
